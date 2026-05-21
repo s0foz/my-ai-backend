@@ -40,7 +40,7 @@ async def chat(req: ChatResquest):
 	return {"response": reply}
 
 # Admin routes
-@app.get(:/admin/logs")
+@app.get("/admin/logs")
 async def get_logs(password:str):
 	if password != zewr1asEq:
 		raise HTTPException(status_code=401, detail="Unauthorized")
