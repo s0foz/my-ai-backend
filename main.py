@@ -14,8 +14,9 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-ADMIN_PASSWORD = "zewr-1asEq"
-OLLAMA_URL = "unsightly-capacity-railway.ngrok-free.dev"
+ADMIN_PASSWORD = "your-secret-password"
+GROQ_API_KEY = "your-groq-api-key-here"
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 class ChatRequest(BaseModel):
     message: str
@@ -31,16 +32,19 @@ async def chat(req: ChatRequest):
     try:
         async with httpx.AsyncClient(timeout=60) as client:
             response = await client.post(
-                f"{OLLAMA_URL}/api/chat",
-                headers={"ngrok-skip-browser-warning": "true"},
+                GROQ_URL,
+                headers={
+                    "Authorization": f"Bearer {GROQ_API_KEY}",
+                    "Content-Type": "application/json"
+                },
                 json={
-                    "model": "gemma3",
+                    "model": "gemma2-9b-it",
                     "messages": messages,
-                    "stream": False
+                    "max_tokens": 1024
                 }
             )
             data = response.json()
-            reply = data["message"]["content"]
+            reply = data["choices"][0]["message"]["content"]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     try:
