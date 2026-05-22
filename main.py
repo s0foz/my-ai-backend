@@ -13,7 +13,7 @@ app.add_middleware(CORSMiddleware,
     allow_headers=["*"])
 
 ADMIN_PASSWORD = "your-secret-password"
-OLLAMA_URL = "unsightly-capacity-railway.ngrok-free.dev"
+OLLAMA_URL = "https://your-domain.ngrok-free.app"
 
 class ChatRequest(BaseModel):
     message: str
@@ -31,6 +31,7 @@ async def chat(req: ChatRequest):
         async with httpx.AsyncClient(timeout=60) as client:
             response = await client.post(
                 f"{OLLAMA_URL}/api/chat",
+                headers={"ngrok-skip-browser-warning": "true"},
                 json={"model": "gemma3", "messages": messages, "stream": False}
             )
             data = response.json()
@@ -38,7 +39,6 @@ async def chat(req: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    # Save conversation
     try:
         with open("training_data.jsonl", "a") as f:
             json.dump({
@@ -66,4 +66,4 @@ async def get_logs(password: str):
 async def update_personality(password: str, prompt: str):
     if password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    return {"status": "Personality update noted!", "prompt": prompt}
+    return {"status": "Personality updated!", "prompt": prompt}
