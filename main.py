@@ -14,8 +14,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-ADMIN_PASSWORD = "your-secret-password"
-GROQ_API_KEY = "your-groq-api-key-here"
+ADMIN_PASSWORD = "zewr-1asEq"
+GROQ_API_KEY = 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"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 class ChatRequest(BaseModel):
