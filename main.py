@@ -12,8 +12,8 @@ app.add_middleware(CORSMiddleware,
     allow_methods=["*"],
     allow_headers=["*"])
 
-ADMIN_PASSWORD = "your-secret-password"
-OLLAMA_URL = "https://your-domain.ngrok-free.app"
+ADMIN_PASSWORD = "zewr1asEq"
+OLLAMA_URL = "https://unsightly-capacity-railway.ngrok-free.dev"
 
 class ChatRequest(BaseModel):
     message: str
@@ -54,7 +54,7 @@ async def chat(req: ChatRequest):
 
 @app.get("/admin/logs")
 async def get_logs(password: str):
-    if password != ADMIN_PASSWORD:
+    if password != ADMIN_PASSWORD:zewr1asEq
         raise HTTPException(status_code=401, detail="Unauthorized")
     try:
         with open("training_data.jsonl") as f:
@@ -64,6 +64,6 @@ async def get_logs(password: str):
 
 @app.post("/admin/update-personality")
 async def update_personality(password: str, prompt: str):
-    if password != ADMIN_PASSWORD:
+    if password != ADMIN_PASSWORD:zewr1asEq
         raise HTTPException(status_code=401, detail="Unauthorized")
     return {"status": "Personality updated!", "prompt": prompt}
