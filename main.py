@@ -7,13 +7,15 @@ from datetime import datetime
 
 app = FastAPI()
 
-app.add_middleware(CORSMiddleware,
+app.add_middleware(
+    CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
-    allow_headers=["*"])
+    allow_headers=["*"]
+)
 
-ADMIN_PASSWORD = "zewr1asEq"
-OLLAMA_URL = "https://unsightly-capacity-railway.ngrok-free.dev"
+ADMIN_PASSWORD = "zewr-1asEq"
+OLLAMA_URL = "unsightly-capacity-railway.ngrok-free.dev"
 
 class ChatRequest(BaseModel):
     message: str
@@ -26,19 +28,21 @@ async def root():
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
     messages = req.history + [{"role": "user", "content": req.message}]
-    
     try:
         async with httpx.AsyncClient(timeout=60) as client:
             response = await client.post(
                 f"{OLLAMA_URL}/api/chat",
                 headers={"ngrok-skip-browser-warning": "true"},
-                json={"model": "gemma3", "messages": messages, "stream": False}
+                json={
+                    "model": "gemma3",
+                    "messages": messages,
+                    "stream": False
+                }
             )
             data = response.json()
             reply = data["message"]["content"]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
     try:
         with open("training_data.jsonl", "a") as f:
             json.dump({
@@ -47,23 +51,22 @@ async def chat(req: ChatRequest):
                 "assistant": reply
             }, f)
             f.write("\n")
-    except:
+    except Exception:
         pass
-
     return {"response": reply}
 
 @app.get("/admin/logs")
 async def get_logs(password: str):
-    if password != ADMIN_PASSWORD:zewr1asEq
+    if password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Unauthorized")
     try:
         with open("training_data.jsonl") as f:
             return {"logs": f.readlines()}
-    except:
+    except Exception:
         return {"logs": []}
 
 @app.post("/admin/update-personality")
 async def update_personality(password: str, prompt: str):
-    if password != ADMIN_PASSWORD:zewr1asEq
+    if password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Unauthorized")
     return {"status": "Personality updated!", "prompt": prompt}
