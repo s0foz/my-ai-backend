@@ -13,7 +13,7 @@ app.add_middleware(CORSMiddleware,
     allow_headers=["*"])
 
 ADMIN_PASSWORD = "your-secret-password"
-OLLAMA_URL = "http://localhost:11434"
+OLLAMA_URL = "unsightly-capacity-railway.ngrok-free.dev"
 
 class ChatRequest(BaseModel):
     message: str
